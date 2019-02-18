@@ -1,0 +1,5 @@
+<root>
+  <item name='android.support.v4.app.Fragment android.os.Bundle getArguments()'>
+    <annotation name='java.lang.annotation.Deprecated' />
+  </item>
+</root>

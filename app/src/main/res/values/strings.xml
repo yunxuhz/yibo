@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">易泊</string>
+    <string name="title_home">首页</string>
+    <string name="title_dashboard">我的</string>
+</resources>
