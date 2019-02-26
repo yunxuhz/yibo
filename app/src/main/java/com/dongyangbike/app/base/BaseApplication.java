@@ -1,11 +1,24 @@
 package com.dongyangbike.app.base;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.model.LatLng;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.cookie.CookieJarImpl;
+import com.zhy.http.okhttp.cookie.store.MemoryCookieStore;
+import com.zhy.http.okhttp.cookie.store.PersistentCookieStore;
+import com.zhy.http.okhttp.https.HttpsUtils;
+import com.zhy.http.okhttp.log.LoggerInterceptor;
+
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.internal.http.HttpHeaders;
+import tech.gujin.toast.ToastUtil;
 
 public class BaseApplication extends Application {
 
@@ -28,6 +41,8 @@ public class BaseApplication extends Application {
         SDKInitializer.initialize(this);
         mLocationClient = new LocationClient(this.getApplicationContext());
         initLocation();
+        initHttp(this);
+        ToastUtil.initialize(this, ToastUtil.Mode.REPLACEABLE);
     }
 
     private void initLocation() {
@@ -53,6 +68,23 @@ public class BaseApplication extends Application {
 
     public void setCurrentLatLng(LatLng currentLatLng) {
         this.currentLatLng = currentLatLng;
+    }
+
+    public static void initHttp(Context context) {
+
+        CookieJarImpl cookieJar = new CookieJarImpl(new PersistentCookieStore(context.getApplicationContext()));
+        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
+
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        builder.addInterceptor(new LoggerInterceptor("YIBO"));   //添加打印LOG的拦截器
+        builder.cookieJar(cookieJar)
+                .cookieJar(new CookieJarImpl(new MemoryCookieStore()))//内存Cookie
+//                .retryOnConnectionFailure(true)
+                .connectTimeout(15000L, TimeUnit.MILLISECONDS)  //连接超时
+//                .writeTimeout(15000L, TimeUnit.MILLISECONDS)
+                .readTimeout(15000L, TimeUnit.MILLISECONDS);     //读取超时
+
+        OkHttpUtils.initClient(builder.build());
     }
 
 }
