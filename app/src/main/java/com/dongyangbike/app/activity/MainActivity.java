@@ -59,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         mFragments = new BaseFragment[] {mMainFragment, mMeFragment};
 
         getSupportFragmentManager().beginTransaction().replace(R.id.mainview,mMainFragment).show(mMainFragment).commit();
-
     }
 
     private void switchFragment(int lastfragment,int index) {

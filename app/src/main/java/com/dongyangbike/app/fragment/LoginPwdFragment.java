@@ -16,6 +16,7 @@ import com.dongyangbike.app.activity.ForgetPwdActivity;
 import com.dongyangbike.app.activity.MainActivity;
 import com.dongyangbike.app.activity.RegisterActivity;
 import com.dongyangbike.app.base.ApiConstant;
+import com.dongyangbike.app.event.LoginEvent;
 import com.dongyangbike.app.http.ack.LoginAck;
 import com.dongyangbike.app.util.AppUtils;
 import com.dongyangbike.app.util.SharedPreferenceUtils;
@@ -91,6 +92,8 @@ public class LoginPwdFragment extends BaseFragment {
                                         final LoginAck data = JSON.parseObject(response, LoginAck.class);
                                         if (data != null && data.getCode().equals("200")) {
                                             SharedPreferenceUtils.put(getActivity(), "token", data.getToken());
+                                            SharedPreferenceUtils.put(getActivity(), "phone", mPhoneEt.getEditableText().toString());
+                                            new LoginEvent().post();
                                             startActivity(new Intent(getActivity(), MainActivity.class));
                                             getActivity().finish();
                                         } else {

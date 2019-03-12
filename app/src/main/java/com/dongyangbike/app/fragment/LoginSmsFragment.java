@@ -18,6 +18,7 @@ import com.dongyangbike.app.R;
 import com.dongyangbike.app.activity.MainActivity;
 import com.dongyangbike.app.activity.RegisterActivity;
 import com.dongyangbike.app.base.ApiConstant;
+import com.dongyangbike.app.event.LoginEvent;
 import com.dongyangbike.app.http.ack.BaseAck;
 import com.dongyangbike.app.http.ack.LoginAck;
 import com.dongyangbike.app.util.AppUtils;
@@ -126,6 +127,8 @@ public class LoginSmsFragment extends BaseFragment {
                                         final LoginAck data = JSON.parseObject(response, LoginAck.class);
                                         if (data != null && data.getCode().equals("200")) {
                                             SharedPreferenceUtils.put(getActivity(), "token", data.getToken());
+                                            SharedPreferenceUtils.put(getActivity(), "phone", mPhoneEt.getEditableText().toString());
+                                            new LoginEvent().post();
                                             startActivity(new Intent(getActivity(), MainActivity.class));
                                             getActivity().finish();
                                         } else {
