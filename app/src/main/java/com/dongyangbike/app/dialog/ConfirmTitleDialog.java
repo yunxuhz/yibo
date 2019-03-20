@@ -39,7 +39,7 @@ public class ConfirmTitleDialog extends BaseDialog {
         setContentView(R.layout.layout_public_base_dialog);
         setTitle(context.getString(titleResId));
         ViewGroup.LayoutParams param = getRightButton().getLayoutParams();
-        param.width = AppUtils.dip2px(context, 190);
+        param.width = AppUtils.dip2px(context, 300);
         getRightButton().setLayoutParams(param);
         setMessage(message);
         setCanceledOnTouchOutside(false);
@@ -95,7 +95,7 @@ public class ConfirmTitleDialog extends BaseDialog {
         setRightButtonListener(null);
     }
 
-    public ConfirmTitleDialog(Context context, String message, int leftBtnText, int rightBtnText) {
+    public ConfirmTitleDialog(Context context, String message, String leftBtnText, String rightBtnText) {
         super(context);
         setContentView(R.layout.layout_public_base_dialog);
         setMessage(message);

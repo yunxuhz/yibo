@@ -57,6 +57,9 @@
         <activity android:name=".activity.ForgetPwdActivity" />
         <activity android:name=".activity.ResetPwdActivity" />
         <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.ParkingRecordActivity" />
+        <activity android:name=".activity.FeedbackActivity" />
+        <activity android:name=".activity.SearchResultActivity" />
 
         <service android:name="com.baidu.location.f" android:enabled="true"
             android:process=":remote" />

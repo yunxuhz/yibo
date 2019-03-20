@@ -12,8 +12,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dongyangbike.app.R;
+import com.dongyangbike.app.activity.FeedbackActivity;
 import com.dongyangbike.app.activity.LoginActivity;
+import com.dongyangbike.app.activity.ParkingRecordActivity;
 import com.dongyangbike.app.activity.SettingActivity;
+import com.dongyangbike.app.dialog.DialogClickListener;
+import com.dongyangbike.app.dialog.DialogManager;
 import com.dongyangbike.app.event.LoginEvent;
 import com.dongyangbike.app.util.SharedPreferenceUtils;
 import com.dongyangbike.app.util.StringUtil;
@@ -22,6 +26,8 @@ import com.google.zxing.common.StringUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import tech.gujin.toast.ToastUtil;
 
 public class MeFragment extends BaseFragment {
 
@@ -89,6 +95,64 @@ public class MeFragment extends BaseFragment {
                 } else {
                     startActivity(new Intent(getActivity(), SettingActivity.class));
                 }
+            }
+        });
+
+        mRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), ParkingRecordActivity.class));
+            }
+        });
+
+        mFeedback.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity(), FeedbackActivity.class));
+            }
+        });
+
+        mRecharge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogManager.showDialog(getActivity(), "是否确认充值？", "取消", "确认", new DialogClickListener() {
+                    @Override
+                    public void onLeftClick() {
+                        ToastUtil.show("取消");
+                    }
+
+                    @Override
+                    public void onRightClick() {
+                        ToastUtil.show("确认");
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
+                });
+            }
+        });
+
+        mWithdraw.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DialogManager.showDialog(getActivity(), "是否确认提现？", "取消", "提现", new DialogClickListener() {
+                    @Override
+                    public void onLeftClick() {
+                        ToastUtil.show("取消");
+                    }
+
+                    @Override
+                    public void onRightClick() {
+                        ToastUtil.show("提现");
+                    }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
+                });
             }
         });
     }

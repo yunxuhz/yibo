@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="250dp"
+              android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_gravity="center"
-              android:background="@drawable/bg_rectangle_black_white"
+              android:background="@color/white"
               android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="37dp"
-        android:layout_marginRight="37dp"
+        android:layout_margin="32dp"
         android:orientation="vertical">
 
         <TextView
@@ -22,35 +21,26 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             android:visibility="gone"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:id="@+id/dialog_message_layout"
-            android:gravity="center">
+
             <TextView
                 android:id="@+id/dialog_message"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:layout_gravity="center_horizontal"
                 android:lineSpacingExtra="6dp"
                 android:gravity="left"
                 android:textColor="@color/black"
                 android:textSize="16sp"/>
-        </LinearLayout>
+
     </LinearLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="15dp"
+        android:layout_height="1px"
         android:background="@color/text_color_unclick"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-
+        android:layout_height="50dp"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -58,27 +48,19 @@
             android:id="@+id/dialog_leftbutton"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:textSize="14sp"
-            android:layout_marginBottom="2dp"
-            android:padding="15dp"
             android:background="@color/white"
-            android:textColor="@color/mainColor"
-        />
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/text_color_unclick"/>
+            android:textColor="@color/meta_text_primary" />
         <Button
             android:id="@+id/dialog_rightbutton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:layout_weight="1"
             android:textSize="14sp"
-            android:layout_marginBottom="2dp"
-            android:background="@color/white"
-            android:textColor="@color/mainColor"/>
+            android:background="@color/mainColor"
+            android:textColor="@color/white"/>
     </LinearLayout>
 </LinearLayout>

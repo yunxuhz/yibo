@@ -25,7 +25,7 @@ public class DialogManager {
                                   final DialogClickListener listener) {
 
         final ConfirmTitleDialog confirmTitleDialog = new ConfirmTitleDialog(context, content,
-                R.string.ok, R.string.cancel);
+                "确认", "取消");
 
         confirmTitleDialog.setRightButtonListener(new View.OnClickListener() {
             @Override
@@ -52,11 +52,11 @@ public class DialogManager {
         confirmTitleDialog.show();
     }
 
-    public static void showDialog(Context context, String content,int leftText,int rightText,
+    public static void showDialog(Context context, String content,String leftText,String rightText,
                                   final DialogClickListener listener) {
 
         final ConfirmTitleDialog confirmTitleDialog = new ConfirmTitleDialog(context, content,
-                rightText, leftText);
+                leftText, rightText);
         confirmTitleDialog.setRightButtonListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -8,4 +8,7 @@ public class ApiConstant {
     public static String SMS_LOGIN = "/api/login/smsLogin";
     public static String PWD_LOGIN = "/api/login/passwordLogin";
     public static String FORGET_PWD = "/api/register/forgetPassword";
+    public static String ORDERS = "/api/order/myOrder";
+    public static String GET_CITY = "/api/city/getLongitudeAndLatitudeCity";
+    public static String SEARCH = "/api/parkingLot/getByNameLikeList";
 }

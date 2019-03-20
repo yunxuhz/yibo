@@ -1,12 +1,18 @@
 package com.dongyangbike.app.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
+import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -22,7 +28,25 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.dongyangbike.app.R;
+import com.dongyangbike.app.activity.ForgetPwdActivity;
+import com.dongyangbike.app.activity.LoginActivity;
+import com.dongyangbike.app.activity.SearchResultActivity;
+import com.dongyangbike.app.base.ApiConstant;
 import com.dongyangbike.app.base.BaseApplication;
+import com.dongyangbike.app.http.ack.BaseAck;
+import com.dongyangbike.app.http.ack.CurCityAck;
+import com.dongyangbike.app.http.ack.SearchAck;
+import com.dongyangbike.app.util.AppUtils;
+import com.dongyangbike.app.util.StringUtil;
+import com.google.gson.Gson;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.HashMap;
+
+import okhttp3.Call;
+import okhttp3.MediaType;
+import tech.gujin.toast.ToastUtil;
 
 public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickListener, BaiduMap.OnMarkerClickListener, BaiduMap.OnMapStatusChangeListener{
 
@@ -38,6 +62,9 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
     private LatLng firstLatLng;
 
     MapStatusUpdate mMapStatusUpdate;
+
+    private TextView mCity;
+    private EditText mInput;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,6 +96,31 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
         mLocClient.registerLocationListener(new MyLocationListener());
         mLocClient.start();
 
+        mCity = view.findViewById(R.id.city);
+        mInput = view.findViewById(R.id.input);
+
+        mCity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        mInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if(i == EditorInfo.IME_ACTION_SEARCH) {
+                    if(!StringUtil.isStringEmpty(mInput.getEditableText().toString())) {
+                        Intent intent = new Intent();
+                        intent.setClass(getActivity(), SearchResultActivity.class);
+                        intent.putExtra("input", mInput.getEditableText().toString());
+                        startActivity(intent);
+                    }
+                }
+                return true;
+            }
+        });
+
         return view;
     }
 
@@ -96,6 +148,7 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
             if (isFirstLoc) {
                 isFirstLoc = false;
                 mBaiDuMap.animateMapStatus(mMapStatusUpdate);
+                getCurCity(location.getLatitude(), location.getLongitude());
             }
         }
     }
@@ -128,5 +181,29 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
     @Override
     public void onMapStatusChangeFinish(MapStatus mapStatus) {
 
+    }
+
+    private void getCurCity(double lat, double lon) {
+        HashMap<String, String> baseParam = AppUtils.getBaseHashMap();
+        baseParam.put("latitude", lat + "");
+        baseParam.put("longitude", lon + "");
+        OkHttpUtils.postString()
+                .url(ApiConstant.BASE_URL + ApiConstant.GET_CITY)
+                .content(new Gson().toJson(baseParam))
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        final CurCityAck data = JSON.parseObject(response, CurCityAck.class);
+                        if (data != null && data.getCode().equals("200")) {
+                            mCity.setText(data.getCityName());
+                        }
+                    }
+                });
     }
 }
