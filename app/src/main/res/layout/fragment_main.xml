@@ -66,11 +66,150 @@
             android:layout_marginRight="16dp" />
     </LinearLayout>
 
-    <com.baidu.mapapi.map.MapView
-        android:id="@+id/baiDu_mapView"
-        android:layout_below="@+id/topbar"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clickable="true" />
+        android:layout_below="@+id/topbar">
 
+        <com.baidu.mapapi.map.MapView
+            android:id="@+id/baiDu_mapView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clickable="true" />
+
+        <ImageView
+            android:id="@+id/lukuang"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/icon_lukuang"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"/>
+
+        <RelativeLayout
+            android:id="@+id/near_station"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/bg_shape_green_rect"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="16dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_near_park"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:text="点击查看附近停车场"
+                android:textSize="16sp"
+                android:textColor="@color/white"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="16dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_near_more"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/station_detail_window"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/near_station"
+            android:padding="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/white" >
+
+            <TextView
+                android:id="@+id/yardName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="111"
+                android:textSize="14sp"
+                android:textColor="@color/meta_text_primary"/>
+
+            <TextView
+                android:id="@+id/count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/yardName"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="111"
+                android:textSize="12sp"
+                android:textColor="@color/meta_text_secondary"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/labelRecyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/count"
+                android:layout_marginTop="8dp"/>
+
+            <RelativeLayout
+                android:layout_width="165dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true">
+
+                <TextView
+                    android:id="@+id/daohang"
+                    android:layout_width="80dp"
+                    android:layout_height="32dp"
+                    android:layout_toRightOf="@+id/yuyue"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center"
+                    android:text="导航"
+                    android:textSize="14sp"
+                    android:textColor="@color/meta_text_primary"
+                    android:background="@drawable/bg_shape_white_rect_green_line"/>
+
+                <TextView
+                    android:id="@+id/yuyue"
+                    android:layout_width="80dp"
+                    android:layout_height="32dp"
+                    android:gravity="center"
+                    android:text="预约"
+                    android:textSize="14sp"
+                    android:textColor="@color/white"
+                    android:background="@color/mainColor"/>
+
+                <TextView
+                    android:id="@+id/distance"
+                    android:layout_width="80dp"
+                    android:layout_height="32dp"
+                    android:layout_below="@+id/daohang"
+                    android:layout_marginTop="4dp"
+                    android:layout_alignParentRight="true"
+                    android:text="距离2.8公里"
+                    android:textSize="12sp"
+                    android:textColor="@color/meta_text_secondary"/>
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/request_location"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/icon_relocation"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_alignParentLeft="true"
+            android:layout_above="@+id/station_detail_window"/>
+    </RelativeLayout>
 </RelativeLayout>

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.ViewHolder> {
     private Context mContext;
     private ArrayList<SearchAck.Data> list;
-    private int type;
     private ClickListener mClickListener;
 
     public interface ClickListener {

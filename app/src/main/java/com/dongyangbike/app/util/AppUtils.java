@@ -1,11 +1,14 @@
 package com.dongyangbike.app.util;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.icu.text.SimpleDateFormat;
 import android.os.Build;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -83,5 +86,13 @@ public class AppUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void hideSoftKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 }

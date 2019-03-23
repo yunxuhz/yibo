@@ -13,6 +13,7 @@ import com.dongyangbike.app.R;
 import com.dongyangbike.app.fragment.BaseFragment;
 import com.dongyangbike.app.fragment.MainFragment;
 import com.dongyangbike.app.fragment.MeFragment;
+import com.dongyangbike.app.util.AppUtils;
 
 import java.util.ArrayList;
 
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
         mFragments = new BaseFragment[] {mMainFragment, mMeFragment};
 
         getSupportFragmentManager().beginTransaction().replace(R.id.mainview,mMainFragment).show(mMainFragment).commit();
+
+        AppUtils.hideSoftKeyboard(this);
     }
 
     private void switchFragment(int lastfragment,int index) {

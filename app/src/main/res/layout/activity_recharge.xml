@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/mainColor">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="帐户充值"
+            android:textSize="20sp"
+            android:textColor="@color/white"/>
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/icon_topbar_back"
+            android:layout_marginLeft="16dp"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="选择充值金额"
+        android:textSize="18sp"
+        android:textColor="@color/meta_text_primary"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp">
+
+        <TextView
+            android:id="@+id/one_hundred"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="16dp"
+            android:text="100元"
+            android:gravity="center"
+            android:padding="16dp"
+            android:textSize="16sp"
+            android:textColor="@color/mainColor"
+            android:background="@drawable/bg_shape_white_rect_green_line"/>
+
+        <TextView
+            android:id="@+id/two_hundred"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="200元"
+            android:gravity="center"
+            android:layout_marginLeft="32dp"
+            android:layout_marginRight="32dp"
+            android:padding="16dp"
+            android:textSize="16sp"
+            android:textColor="@color/mainColor"
+            android:background="@drawable/bg_shape_white_rect_green_line"/>
+
+        <TextView
+            android:id="@+id/five_hundred"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="500元"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:padding="16dp"
+            android:textSize="16sp"
+            android:textColor="@color/mainColor"
+            android:background="@drawable/bg_shape_white_rect_green_line"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/wx_recharge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="微信支付"
+        android:gravity="center"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_shape_green_rect"/>
+
+    <TextView
+        android:id="@+id/ali_recharge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="支付宝"
+        android:gravity="center"
+        android:padding="16dp"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:background="@drawable/bg_shape_green_rect"/>
+</LinearLayout>

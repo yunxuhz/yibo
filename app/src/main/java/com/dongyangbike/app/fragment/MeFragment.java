@@ -11,22 +11,36 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.dongyangbike.app.R;
 import com.dongyangbike.app.activity.FeedbackActivity;
 import com.dongyangbike.app.activity.LoginActivity;
 import com.dongyangbike.app.activity.ParkingRecordActivity;
+import com.dongyangbike.app.activity.RechargeActivity;
 import com.dongyangbike.app.activity.SettingActivity;
+import com.dongyangbike.app.base.ApiConstant;
 import com.dongyangbike.app.dialog.DialogClickListener;
 import com.dongyangbike.app.dialog.DialogManager;
 import com.dongyangbike.app.event.LoginEvent;
+import com.dongyangbike.app.http.ack.BaseAck;
+import com.dongyangbike.app.http.ack.NearStationsAck;
+import com.dongyangbike.app.http.ack.UserInfoAck;
+import com.dongyangbike.app.util.AppUtils;
 import com.dongyangbike.app.util.SharedPreferenceUtils;
 import com.dongyangbike.app.util.StringUtil;
+import com.google.gson.Gson;
 import com.google.zxing.common.StringUtils;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
+
+import okhttp3.Call;
+import okhttp3.MediaType;
 import tech.gujin.toast.ToastUtil;
 
 public class MeFragment extends BaseFragment {
@@ -84,6 +98,7 @@ public class MeFragment extends BaseFragment {
             });
         } else {
             mLogin.setText(phone);
+            getUserInfo(phone);
         }
 
         mSetting.setOnClickListener(new View.OnClickListener() {
@@ -118,12 +133,12 @@ public class MeFragment extends BaseFragment {
                 DialogManager.showDialog(getActivity(), "是否确认充值？", "取消", "确认", new DialogClickListener() {
                     @Override
                     public void onLeftClick() {
-                        ToastUtil.show("取消");
+
                     }
 
                     @Override
                     public void onRightClick() {
-                        ToastUtil.show("确认");
+                        startActivity(new Intent(getActivity(), RechargeActivity.class));
                     }
 
                     @Override
@@ -140,12 +155,12 @@ public class MeFragment extends BaseFragment {
                 DialogManager.showDialog(getActivity(), "是否确认提现？", "取消", "提现", new DialogClickListener() {
                     @Override
                     public void onLeftClick() {
-                        ToastUtil.show("取消");
+
                     }
 
                     @Override
                     public void onRightClick() {
-                        ToastUtil.show("提现");
+                        doWithDraw(mAmount.getText().toString());
                     }
 
                     @Override
@@ -171,5 +186,55 @@ public class MeFragment extends BaseFragment {
         } else {
             mLogin.setText(phone);
         }
+    }
+
+    private void getUserInfo(String phone) {
+        HashMap<String, String> baseParam = AppUtils.getBaseHashMap();
+        baseParam.put("channel", "Android");
+        baseParam.put("mobile", phone);
+        OkHttpUtils.postString()
+                .url(ApiConstant.BASE_URL + ApiConstant.GET_USER_INFO)
+                .content(new Gson().toJson(baseParam))
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        final UserInfoAck data = JSON.parseObject(response, UserInfoAck.class);
+                        if (data != null && data.getCode().equals("200")) {
+                            mAmount.setText(data.getData().getBalance() + "");
+                        }
+                    }
+                });
+    }
+
+    private void doWithDraw(String amount) {
+        String phone = (String)SharedPreferenceUtils.get(getContext(), "phone", "");
+        HashMap<String, String> baseParam = AppUtils.getBaseHashMap();
+        baseParam.put("apply_amount", amount);
+        baseParam.put("mobile", phone);
+        OkHttpUtils.postString()
+                .url(ApiConstant.BASE_URL + ApiConstant.DO_WITHDRAW)
+                .content(new Gson().toJson(baseParam))
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        ToastUtil.show(e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        final BaseAck data = JSON.parseObject(response, BaseAck.class);
+                        if (data != null) {
+                            ToastUtil.show(data.getMessage());
+                        }
+                    }
+                });
     }
 }
