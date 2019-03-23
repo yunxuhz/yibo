@@ -16,21 +16,15 @@ public class ParkDetailAck extends BaseAck {
 
     public static class ListBeanX {
         /**
-         * id : 0
-         * label : string
-         * list : [{"id":0,"locationNumber":"string","name":"string","remark":"string"}]
-         * name : string
-         * place : string
-         * sort : 0
-         * yard_name : string
+         * id : 1
+         * name : B1
+         * sort : 1
+         * list : [{"id":7,"name":"A1007","locationNumber":"A1007","remark":null},{"id":2,"name":"A1002","locationNumber":"A1002","remark":null},{"id":3,"name":"A1003","locationNumber":"A1003","remark":null},{"id":6,"name":"A1006","locationNumber":"A1006","remark":null},{"id":4,"name":"A1004","locationNumber":"A1004","remark":null}]
          */
 
         private int id;
-        private String label;
         private String name;
-        private String place;
         private int sort;
-        private String yard_name;
         private List<ListBean> list;
 
         public int getId() {
@@ -41,14 +35,6 @@ public class ParkDetailAck extends BaseAck {
             this.id = id;
         }
 
-        public String getLabel() {
-            return label;
-        }
-
-        public void setLabel(String label) {
-            this.label = label;
-        }
-
         public String getName() {
             return name;
         }
@@ -57,28 +43,12 @@ public class ParkDetailAck extends BaseAck {
             this.name = name;
         }
 
-        public String getPlace() {
-            return place;
-        }
-
-        public void setPlace(String place) {
-            this.place = place;
-        }
-
         public int getSort() {
             return sort;
         }
 
         public void setSort(int sort) {
             this.sort = sort;
-        }
-
-        public String getYard_name() {
-            return yard_name;
-        }
-
-        public void setYard_name(String yard_name) {
-            this.yard_name = yard_name;
         }
 
         public List<ListBean> getList() {
@@ -91,16 +61,16 @@ public class ParkDetailAck extends BaseAck {
 
         public static class ListBean {
             /**
-             * id : 0
-             * locationNumber : string
-             * name : string
-             * remark : string
+             * id : 7
+             * name : A1007
+             * locationNumber : A1007
+             * remark : null
              */
 
             private int id;
-            private String locationNumber;
             private String name;
-            private String remark;
+            private String locationNumber;
+            private Object remark;
 
             public int getId() {
                 return id;
@@ -108,14 +78,6 @@ public class ParkDetailAck extends BaseAck {
 
             public void setId(int id) {
                 this.id = id;
-            }
-
-            public String getLocationNumber() {
-                return locationNumber;
-            }
-
-            public void setLocationNumber(String locationNumber) {
-                this.locationNumber = locationNumber;
             }
 
             public String getName() {
@@ -126,11 +88,19 @@ public class ParkDetailAck extends BaseAck {
                 this.name = name;
             }
 
-            public String getRemark() {
+            public String getLocationNumber() {
+                return locationNumber;
+            }
+
+            public void setLocationNumber(String locationNumber) {
+                this.locationNumber = locationNumber;
+            }
+
+            public Object getRemark() {
                 return remark;
             }
 
-            public void setRemark(String remark) {
+            public void setRemark(Object remark) {
                 this.remark = remark;
             }
         }

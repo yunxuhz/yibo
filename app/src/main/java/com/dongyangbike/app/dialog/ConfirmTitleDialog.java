@@ -106,23 +106,22 @@ public class ConfirmTitleDialog extends BaseDialog {
         setRightButtonListener(null);
     }
 
-    public ConfirmTitleDialog(Context context, int message, int leftBtnText, int rightBtnText) {
-        super(context);
-        setContentView(R.layout.layout_public_base_dialog);
-        setMessage(context.getString(message));
-        setCanceledOnTouchOutside(false);
-        setLeftText(leftBtnText);
-        setRightText(rightBtnText);
-        setLeftButtonListener(null);
-        setRightButtonListener(null);
-    }
-
     public ConfirmTitleDialog(Context context, int layoutResId, String title, String message, int leftBtnText, int rightBtnText) {
         super(context);
         setContentView(layoutResId);
         setCancelable(false);
         setMessage(message);
         setTitle(title);
+        setLeftText(leftBtnText);
+        setRightText(rightBtnText);
+        setLeftButtonListener(null);
+        setRightButtonListener(null);
+    }
+
+    public ConfirmTitleDialog(Context context, int layoutResId, String leftBtnText, String rightBtnText) {
+        super(context);
+        setContentView(layoutResId);
+        setCancelable(false);
         setLeftText(leftBtnText);
         setRightText(rightBtnText);
         setLeftButtonListener(null);

@@ -19,5 +19,6 @@ public class ApiConstant {
     public static String DO_RECHARGE = "/api/pay/recharge";
     public static String DO_WITHDRAW = "/api/pay/cashWithdrawal";
     public static String GET_PARK_DETAIL = "/api/parkingLot/getByLotId";
+    public static String MAKE_APPOINTMENT = "/api/order/makeAppointment";
 
 }

@@ -82,4 +82,33 @@ public class DialogManager {
         confirmTitleDialog.show();
     }
 
+    public static void showCustomDialog(Context context, int layoutId, String leftText,String rightText,
+                                  final DialogClickListener listener) {
+
+        final ConfirmTitleDialog confirmTitleDialog = new ConfirmTitleDialog(context, layoutId,
+                leftText, rightText);
+        confirmTitleDialog.setRightButtonListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmTitleDialog.dismiss();
+                listener.onRightClick();
+            }
+        });
+
+        confirmTitleDialog.setLeftButtonListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmTitleDialog.dismiss();
+                listener.onLeftClick();
+            }
+        });
+        confirmTitleDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                listener.onDismiss();
+
+            }
+        });
+        confirmTitleDialog.show();
+    }
 }

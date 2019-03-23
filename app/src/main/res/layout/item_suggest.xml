@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_suggest"
+    android:layout_width="150dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_square_gray_not_solid"
+    android:padding="6dp"
+    android:layout_marginRight="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="推荐0"
+        android:textSize="14sp"
+        android:textColor="@color/meta_text_primary"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="车位编号:"
+        android:textSize="12sp"
+        android:textColor="@color/meta_text_primary"/>
+
+    <TextView
+        android:id="@+id/text3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="车位描述:"
+        android:textSize="12sp"
+        android:textColor="@color/meta_text_primary"/>
+
+</LinearLayout>

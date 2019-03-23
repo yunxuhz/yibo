@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -11,6 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -39,10 +43,15 @@ import com.dongyangbike.app.activity.ForgetPwdActivity;
 import com.dongyangbike.app.activity.LoginActivity;
 import com.dongyangbike.app.activity.MainActivity;
 import com.dongyangbike.app.activity.NearStationsActivity;
+import com.dongyangbike.app.activity.RechargeActivity;
 import com.dongyangbike.app.activity.SearchResultActivity;
+import com.dongyangbike.app.adapter.ParkIdAdapter;
+import com.dongyangbike.app.adapter.SuggestAdapter;
 import com.dongyangbike.app.adapter.TextAdapter;
 import com.dongyangbike.app.base.ApiConstant;
 import com.dongyangbike.app.base.BaseApplication;
+import com.dongyangbike.app.dialog.DialogClickListener;
+import com.dongyangbike.app.dialog.DialogManager;
 import com.dongyangbike.app.event.LoginEvent;
 import com.dongyangbike.app.event.SwitchParkEvent;
 import com.dongyangbike.app.http.ack.BaseAck;
@@ -65,6 +74,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -395,7 +405,7 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
         mBaiDuMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
     }
 
-    private void showParkDetail(NearStationsAck.Data.Row data) {
+    private void showParkDetail(final NearStationsAck.Data.Row data) {
         HashMap<String, String> baseParam = AppUtils.getBaseHashMap();
         baseParam.put("lotId", data.getId() + "");
         OkHttpUtils.postString()
@@ -410,15 +420,104 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
 
                     @Override
                     public void onResponse(String response, int id) {
-                        final ParkDetailAck data = JSON.parseObject(response, ParkDetailAck.class);
-                        if (data != null && data.getCode().equals("200")) {
-                            showParkDetailWindow(data);
+                        final ParkDetailAck parkdetail = JSON.parseObject(response, ParkDetailAck.class);
+                        if (parkdetail != null && parkdetail.getCode().equals("200")) {
+                            showParkDetailWindow(data.getMerchantName() + data.getYardName(), parkdetail);
                         }
                     }
                 });
     }
 
-    private void showParkDetailWindow(ParkDetailAck data) {
+    //推荐车位
+    private int mSelectedParkId;
+    private int mFloorId;
 
+    private void showParkDetailWindow(String name, final ParkDetailAck data) {
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+
+        View dialogView = View.inflate(getActivity(), R.layout.dialog_park_detail, null);
+        TextView mName = dialogView.findViewById(R.id.name);
+        Button leftButton = dialogView.findViewById(R.id.dialog_leftbutton);
+        Button rightButton = dialogView.findViewById(R.id.dialog_rightbutton);
+        RecyclerView mSuggestView = dialogView.findViewById(R.id.suggestRecyclerView);
+        RecyclerView mNumberView = dialogView.findViewById(R.id.numberRecyclerView);
+
+        mName.setText(name);
+
+        mFloorId = 1;
+
+        SuggestAdapter adapter = new SuggestAdapter(getActivity(), data.getList(), new SuggestAdapter.ClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                mSelectedParkId = data.getList().get(position).getId();
+                ToastUtil.show("挑选了推荐车位" + position);
+            }
+        });
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        mSuggestView.setLayoutManager(layoutManager);
+        mSuggestView.setFocusable(false);
+        mSuggestView.setHasFixedSize(true);
+        mSuggestView.setAdapter(adapter);
+
+        ParkIdAdapter mParkAdapter = new ParkIdAdapter(getActivity(), data.getList().get(0).getList(), new ParkIdAdapter.ClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                mSelectedParkId = data.getList().get(position).getId();
+                ToastUtil.show("挑选了推荐车位" + position);
+            }
+        });
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(getActivity());
+        layoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
+        mNumberView.setLayoutManager(layoutManager2);
+        mNumberView.setFocusable(false);
+        mNumberView.setHasFixedSize(true);
+        mNumberView.setAdapter(mParkAdapter);
+
+
+        dialog.setView(dialogView);
+        final AlertDialog dia = dialog.show();
+
+        leftButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dia.dismiss();
+            }
+        });
+        rightButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                makeAppointment(mSelectedParkId);
+                dia.dismiss();
+            }
+        });
+    }
+
+    private void makeAppointment(int parkId) {
+        ToastUtil.show("预约车位id：" + parkId);
+//        String phone = (String)SharedPreferenceUtils.get(getContext(), "phone", "");
+//        HashMap<String, String> baseParam = AppUtils.getBaseHashMap();
+//        baseParam.put("car_license", "浙A88888");
+//        baseParam.put("layer_name", "B1");
+//        baseParam.put("lock_id", parkId + "");
+//        baseParam.put("lock_position", parkId + "");
+//        baseParam.put("merchant_id", parkId + "");
+//        baseParam.put("mobile", phone);
+//        baseParam.put("yard_id", parkId + "");
+//
+//        OkHttpUtils.postString()
+//                .url(ApiConstant.BASE_URL + ApiConstant.MAKE_APPOINTMENT)
+//                .content(new Gson().toJson(baseParam))
+//                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+//                .build()
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onError(Call call, Exception e, int id) {
+//                    }
+//
+//                    @Override
+//                    public void onResponse(String response, int id) {
+//                    }
+//                });
     }
 }
