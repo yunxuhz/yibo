@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dongyangbike.app.R;
+import com.dongyangbike.app.http.ack.GetRecommendedAck;
 import com.dongyangbike.app.http.ack.ParkDetailAck;
 
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
 
 public class ParkIdAdapter extends RecyclerView.Adapter<ParkIdAdapter.ViewHolder> {
     private Context mContext;
-    private List<ParkDetailAck.ListBeanX.ListBean> list;
+    private List<GetRecommendedAck.ListBeanX.ListBean> list;
     private ClickListener mClickListener;
     private int mSelectIndex = -1;
 
@@ -27,10 +29,21 @@ public class ParkIdAdapter extends RecyclerView.Adapter<ParkIdAdapter.ViewHolder
         void onItemClick(int position);
     }
 
-    public ParkIdAdapter(Context context, List<ParkDetailAck.ListBeanX.ListBean> list, ClickListener listener) {
+    public ParkIdAdapter(Context context, List<GetRecommendedAck.ListBeanX.ListBean> list, int selectIndex, ClickListener listener) {
         this.mContext = context;
         this.list = list;
+        this.mSelectIndex = selectIndex;
         this.mClickListener = listener;
+    }
+
+    public void updateData(List<GetRecommendedAck.ListBeanX.ListBean> list) {
+        this.list = list;
+        notifyDataSetChanged();
+    }
+
+    public void resetSelected() {
+        mSelectIndex = -1;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -44,7 +57,7 @@ public class ParkIdAdapter extends RecyclerView.Adapter<ParkIdAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.text1.setText("车位号：" + (position + 1));
+        holder.text1.setText("车位号：" + list.get(position).getLocation_number());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +92,7 @@ public class ParkIdAdapter extends RecyclerView.Adapter<ParkIdAdapter.ViewHolder
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        LinearLayout layout;
+        RelativeLayout layout;
         TextView text1;
 
         public ViewHolder(View view) {

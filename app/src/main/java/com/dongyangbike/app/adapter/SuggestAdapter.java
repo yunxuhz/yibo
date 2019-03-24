@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dongyangbike.app.R;
+import com.dongyangbike.app.http.ack.GetRecommendedAck;
 import com.dongyangbike.app.http.ack.ParkDetailAck;
 
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class SuggestAdapter extends RecyclerView.Adapter<SuggestAdapter.ViewHolder> {
     private Context mContext;
-    private List<ParkDetailAck.ListBeanX> list;
+    private List<GetRecommendedAck.ListBeanX> list;
     private ClickListener mClickListener;
     private int mSelectIndex = -1;
 
@@ -27,10 +28,16 @@ public class SuggestAdapter extends RecyclerView.Adapter<SuggestAdapter.ViewHold
         void onItemClick(int position);
     }
 
-    public SuggestAdapter(Context context, List<ParkDetailAck.ListBeanX> list, ClickListener listener) {
+    public SuggestAdapter(Context context, List<GetRecommendedAck.ListBeanX> list, int selectIndex, ClickListener listener) {
         this.mContext = context;
         this.list = list;
+        this.mSelectIndex = selectIndex;
         this.mClickListener = listener;
+    }
+
+    public void resetSelected() {
+        mSelectIndex = -1;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -44,9 +51,12 @@ public class SuggestAdapter extends RecyclerView.Adapter<SuggestAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.text1.setText("推荐" + (position + 1));
-        holder.text2.setText("车位编号：" + list.get(position).getId());
-        holder.text3.setText("车位描述：" + list.get(position).getName());
+        if(list != null && list.get(0) != null && list.get(0).getList() != null
+                && list.get(0).getList().get(position) != null) {
+            holder.text1.setText("推荐" + (position + 1));
+            holder.text2.setText("车位编号：" + list.get(0).getList().get(position).getLocation_number());
+            holder.text3.setText("车位描述：" + list.get(0).getList().get(position).getRemark());
+        }
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +76,7 @@ public class SuggestAdapter extends RecyclerView.Adapter<SuggestAdapter.ViewHold
 
     @Override
     public int getItemCount() {
-            return list.size() ;
+            return list.get(0).getList().size() ;
     }
 
     @Override

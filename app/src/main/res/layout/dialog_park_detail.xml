@@ -45,6 +45,7 @@
         android:layout_height="wrap_content"/>
 
     <RadioGroup
+        android:id="@+id/radid_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

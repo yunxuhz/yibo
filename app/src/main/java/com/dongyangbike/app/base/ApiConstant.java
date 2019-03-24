@@ -20,5 +20,9 @@ public class ApiConstant {
     public static String DO_WITHDRAW = "/api/pay/cashWithdrawal";
     public static String GET_PARK_DETAIL = "/api/parkingLot/getByLotId";
     public static String MAKE_APPOINTMENT = "/api/order/makeAppointment";
+    public static String GET_RECOMMENDED = "/api/parkingLot/getByLotIdRecommendParkingLot";
+    public static String OPEN_LOCK = "/api/parkingLot/openLock";
+    public static String PAY = "/api/pay/deduct";
+    public static String CANCEL = "/api/order/cancel";
 
 }

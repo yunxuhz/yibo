@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/topbar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/mainColor">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:src="@mipmap/icon_back"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:maxEms="15"
+            android:ellipsize="end"
+            android:text="停车场详情"
+            android:textSize="24sp"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp">
+
+            <TextView
+                android:id="@+id/yardName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="111"
+                android:textSize="14sp"
+                android:textColor="@color/meta_text_primary"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/labelRecyclerView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/yardName"
+                android:layout_marginTop="8dp"/>
+
+            <RelativeLayout
+                android:id="@+id/layout1"
+                android:layout_width="165dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true">
+
+                <TextView
+                    android:id="@+id/daohang"
+                    android:layout_width="80dp"
+                    android:layout_height="32dp"
+                    android:layout_toRightOf="@+id/command"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="center"
+                    android:text="导航"
+                    android:textSize="14sp"
+                    android:textColor="@color/meta_text_primary"
+                    android:background="@drawable/bg_shape_white_rect_green_line"/>
+
+                <TextView
+                    android:id="@+id/command"
+                    android:layout_width="80dp"
+                    android:layout_height="32dp"
+                    android:gravity="center"
+                    android:text="进场"
+                    android:textSize="14sp"
+                    android:textColor="@color/white"
+                    android:background="@color/mainColor"/>
+
+                <TextView
+                    android:id="@+id/cancel"
+                    android:layout_width="80dp"
+                    android:layout_height="32dp"
+                    android:layout_below="@+id/command"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:text="取消"
+                    android:textSize="14sp"
+                    android:textColor="@color/meta_text_primary"
+                    android:background="@drawable/bg_shape_white_rect_green_line"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@color/meta_text_fifth"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="总共车位"
+                    android:textSize="16sp"
+                    android:textColor="@color/meta_text_primary"/>
+
+                <TextView
+                    android:id="@+id/total"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:text="7个"
+                    android:textSize="12sp"
+                    android:textColor="@color/meta_text_primary"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="空余车位"
+                    android:textSize="16sp"
+                    android:textColor="@color/meta_text_primary"/>
+
+                <TextView
+                    android:id="@+id/empty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:text="7个"
+                    android:textSize="12sp"
+                    android:textColor="@color/meta_text_primary"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="收费标准"
+                    android:textSize="16sp"
+                    android:textColor="@color/meta_text_primary"/>
+
+                <TextView
+                    android:id="@+id/feeinfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:text="5元/小时"
+                    android:textSize="12sp"
+                    android:textColor="@color/meta_text_primary"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@color/meta_text_fifth"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="预约车位"
+            android:textSize="14sp"
+            android:textColor="@color/meta_text_primary"/>
+
+        <TextView
+            android:id="@+id/parkinfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="楼层:"
+            android:textSize="12sp"
+            android:textColor="@color/meta_text_primary"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@color/meta_text_fifth"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:background="@color/meta_text_fifth"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="费用(元)"
+                    android:textSize="16sp"
+                    android:textColor="@color/meta_text_primary"/>
+
+                <TextView
+                    android:id="@+id/fee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:text="7个"
+                    android:textSize="12sp"
+                    android:textColor="@color/meta_text_primary"/>
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/meta_text_tertiary"/>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="时间"
+                    android:textSize="16sp"
+                    android:textColor="@color/meta_text_primary"/>
+
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="4dp"
+                    android:text="0:0:0"
+                    android:textSize="12sp"
+                    android:textColor="@color/meta_text_primary"/>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.baidu.mapapi.map.MapView
+        android:id="@+id/baiDu_mapView"
+        android:layout_below="@+id/topbar"
+        android:layout_above="@+id/bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true" />
+</RelativeLayout>

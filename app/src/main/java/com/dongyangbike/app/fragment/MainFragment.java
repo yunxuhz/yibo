@@ -1,9 +1,11 @@
 package com.dongyangbike.app.fragment;
 
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +19,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,6 +43,7 @@ import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.dongyangbike.app.R;
+import com.dongyangbike.app.activity.AppointmentActivity;
 import com.dongyangbike.app.activity.ForgetPwdActivity;
 import com.dongyangbike.app.activity.LoginActivity;
 import com.dongyangbike.app.activity.MainActivity;
@@ -56,13 +61,18 @@ import com.dongyangbike.app.event.LoginEvent;
 import com.dongyangbike.app.event.SwitchParkEvent;
 import com.dongyangbike.app.http.ack.BaseAck;
 import com.dongyangbike.app.http.ack.CurCityAck;
+import com.dongyangbike.app.http.ack.GetRecommendedAck;
+import com.dongyangbike.app.http.ack.MakeAppointmentAck;
+import com.dongyangbike.app.http.ack.MyOrderAck;
 import com.dongyangbike.app.http.ack.NearStationsAck;
 import com.dongyangbike.app.http.ack.ParkDetailAck;
 import com.dongyangbike.app.http.ack.SearchAck;
 import com.dongyangbike.app.util.AppUtils;
+import com.dongyangbike.app.util.LogUtil;
 import com.dongyangbike.app.util.MapUtils;
 import com.dongyangbike.app.util.SharedPreferenceUtils;
 import com.dongyangbike.app.util.StringUtil;
+import com.dongyangbike.app.widget.SimpleDividerItemDecoration;
 import com.google.gson.Gson;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -272,7 +282,7 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
         yuyue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showParkDetail(data);
+                getRecommend(data);
             }
         });
         daohang.setOnClickListener(new View.OnClickListener() {
@@ -405,11 +415,11 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
         mBaiDuMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
     }
 
-    private void showParkDetail(final NearStationsAck.Data.Row data) {
+    private void getRecommend(final NearStationsAck.Data.Row data) {
         HashMap<String, String> baseParam = AppUtils.getBaseHashMap();
         baseParam.put("lotId", data.getId() + "");
         OkHttpUtils.postString()
-                .url(ApiConstant.BASE_URL + ApiConstant.GET_PARK_DETAIL)
+                .url(ApiConstant.BASE_URL + ApiConstant.GET_RECOMMENDED)
                 .content(new Gson().toJson(baseParam))
                 .mediaType(MediaType.parse("application/json; charset=utf-8"))
                 .build()
@@ -420,19 +430,21 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
 
                     @Override
                     public void onResponse(String response, int id) {
-                        final ParkDetailAck parkdetail = JSON.parseObject(response, ParkDetailAck.class);
-                        if (parkdetail != null && parkdetail.getCode().equals("200")) {
-                            showParkDetailWindow(data.getMerchantName() + data.getYardName(), parkdetail);
+                        final GetRecommendedAck detail = JSON.parseObject(response, GetRecommendedAck.class);
+                        if (detail != null && detail.getCode().equals("200")) {
+                            onClickMakeAppointment(data, detail);
                         }
                     }
                 });
     }
 
     //推荐车位
-    private int mSelectedParkId;
-    private int mFloorId;
+    private int mSelectedParkId = -1;
+    private int mFloor;
+    private ParkIdAdapter mParkAdapter;
+    private SuggestAdapter mSelectAdapter;
 
-    private void showParkDetailWindow(String name, final ParkDetailAck data) {
+    private void onClickMakeAppointment(final NearStationsAck.Data.Row temp, final GetRecommendedAck data) {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
 
         View dialogView = View.inflate(getActivity(), R.layout.dialog_park_detail, null);
@@ -442,15 +454,14 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
         RecyclerView mSuggestView = dialogView.findViewById(R.id.suggestRecyclerView);
         RecyclerView mNumberView = dialogView.findViewById(R.id.numberRecyclerView);
 
-        mName.setText(name);
+        mName.setText(temp.getYardName() + temp.getMerchantName());
 
-        mFloorId = 1;
-
-        SuggestAdapter adapter = new SuggestAdapter(getActivity(), data.getList(), new SuggestAdapter.ClickListener() {
+        mSelectAdapter = new SuggestAdapter(getActivity(), data.getList(), -1, new SuggestAdapter.ClickListener() {
             @Override
             public void onItemClick(int position) {
-                mSelectedParkId = data.getList().get(position).getId();
+                mSelectedParkId = data.getList().get(0).getList().get(position).getId();
                 ToastUtil.show("挑选了推荐车位" + position);
+                mParkAdapter.resetSelected();
             }
         });
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -458,22 +469,78 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
         mSuggestView.setLayoutManager(layoutManager);
         mSuggestView.setFocusable(false);
         mSuggestView.setHasFixedSize(true);
-        mSuggestView.setAdapter(adapter);
+        mSuggestView.setAdapter(mSelectAdapter);
 
-        ParkIdAdapter mParkAdapter = new ParkIdAdapter(getActivity(), data.getList().get(0).getList(), new ParkIdAdapter.ClickListener() {
+        mFloor = 0;
+
+        mParkAdapter = new ParkIdAdapter(getActivity(), data.getList().get(mFloor).getList(), -1, new ParkIdAdapter.ClickListener() {
             @Override
             public void onItemClick(int position) {
-                mSelectedParkId = data.getList().get(position).getId();
-                ToastUtil.show("挑选了推荐车位" + position);
+                mSelectedParkId = data.getList().get(mFloor).getList().get(position).getId();
+                ToastUtil.show("挑选了推荐车位:" + data.getList().get(mFloor).getList().get(position).getLocation_number());
+                mSelectAdapter.resetSelected();
             }
         });
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(getActivity());
         layoutManager2.setOrientation(LinearLayoutManager.VERTICAL);
+        Drawable drawable = ContextCompat.getDrawable(getActivity(), R.drawable.divider_white);
+        mNumberView.addItemDecoration(new SimpleDividerItemDecoration(getActivity(), drawable, AppUtils.dip2px(getActivity(), 8)));
         mNumberView.setLayoutManager(layoutManager2);
         mNumberView.setFocusable(false);
         mNumberView.setHasFixedSize(true);
         mNumberView.setAdapter(mParkAdapter);
 
+        RadioGroup radioGroup = dialogView.findViewById(R.id.radid_group);
+        RadioButton button1 = dialogView.findViewById(R.id.box1);
+        RadioButton button2 = dialogView.findViewById(R.id.box2);
+        RadioButton button3 = dialogView.findViewById(R.id.box3);
+
+        if(data.getList().size() == 0) {
+            button1.setVisibility(View.INVISIBLE);
+            button2.setVisibility(View.INVISIBLE);
+            button3.setVisibility(View.INVISIBLE);
+        } else if(data.getList().size() == 1) {
+            button1.setVisibility(View.VISIBLE);
+            button2.setVisibility(View.INVISIBLE);
+            button3.setVisibility(View.INVISIBLE);
+        } else if(data.getList().size() == 2) {
+            button1.setVisibility(View.VISIBLE);
+            button2.setVisibility(View.VISIBLE);
+            button3.setVisibility(View.INVISIBLE);
+        } else if(data.getList().size() == 3) {
+            button1.setVisibility(View.VISIBLE);
+            button2.setVisibility(View.VISIBLE);
+            button3.setVisibility(View.VISIBLE);
+        }
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                switch (radioGroup.getCheckedRadioButtonId()) {
+                    case R.id.box1:
+                        if(mFloor != 0) {
+                            mFloor = 0;
+                            mParkAdapter.updateData(data.getList().get(mFloor).getList());
+                        }
+                        break;
+                    case R.id.box2:
+                        if(mFloor != 1) {
+                            mFloor = 1;
+                            mParkAdapter.updateData(data.getList().get(mFloor).getList());
+                        }
+                        break;
+                    case R.id.box3:
+                        if(mFloor != 2) {
+                            mFloor = 2;
+                            mParkAdapter.updateData(data.getList().get(mFloor).getList());
+                        }
+                        break;
+                    default:
+                        mFloor = 0;
+                        break;
+                }
+            }
+        });
 
         dialog.setView(dialogView);
         final AlertDialog dia = dialog.show();
@@ -487,37 +554,97 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
         rightButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                makeAppointment(mSelectedParkId);
+                makeAppointment(temp, mSelectedParkId);
                 dia.dismiss();
             }
         });
     }
 
-    private void makeAppointment(int parkId) {
-        ToastUtil.show("预约车位id：" + parkId);
-//        String phone = (String)SharedPreferenceUtils.get(getContext(), "phone", "");
-//        HashMap<String, String> baseParam = AppUtils.getBaseHashMap();
-//        baseParam.put("car_license", "浙A88888");
-//        baseParam.put("layer_name", "B1");
-//        baseParam.put("lock_id", parkId + "");
-//        baseParam.put("lock_position", parkId + "");
-//        baseParam.put("merchant_id", parkId + "");
-//        baseParam.put("mobile", phone);
-//        baseParam.put("yard_id", parkId + "");
-//
-//        OkHttpUtils.postString()
-//                .url(ApiConstant.BASE_URL + ApiConstant.MAKE_APPOINTMENT)
-//                .content(new Gson().toJson(baseParam))
-//                .mediaType(MediaType.parse("application/json; charset=utf-8"))
-//                .build()
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onError(Call call, Exception e, int id) {
-//                    }
-//
-//                    @Override
-//                    public void onResponse(String response, int id) {
-//                    }
-//                });
+    private void makeAppointment(final NearStationsAck.Data.Row temp, int parkId) {
+        if(parkId == -1) {
+            ToastUtil.show("请先选择一个车位");
+            return;
+        }
+
+
+        String phone = (String)SharedPreferenceUtils.get(getContext(), "phone", "");
+        HashMap<String, String> baseParam = AppUtils.getBaseHashMap();
+        baseParam.put("car_license", "浙A88888");
+        if(mFloor == 0) {
+            baseParam.put("layer_name", "B1");
+        } else if(mFloor == 1) {
+            baseParam.put("layer_name", "B2");
+        } else if(mFloor == 2) {
+            baseParam.put("layer_name", "B3");
+        }
+        baseParam.put("lock_id", parkId + "");
+        baseParam.put("lock_position", parkId + "");
+        baseParam.put("merchant_id", temp.getMerchantId() + "");
+        baseParam.put("mobile", phone);
+        baseParam.put("yard_id", temp.getId() + "");
+
+        OkHttpUtils.postString()
+                .url(ApiConstant.BASE_URL + ApiConstant.MAKE_APPOINTMENT)
+                .content(new Gson().toJson(baseParam))
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        MakeAppointmentAck ack = JSON.parseObject(response, MakeAppointmentAck.class);
+                        if(ack != null && (ack.getCode().equals("200") || ack.getCode().equals("102"))) {
+                            Intent intent = new Intent();
+                            intent.putExtra("lat", temp.getLatitude());
+                            intent.putExtra("lon", temp.getLongitude());
+                            intent.putExtra("address", temp.getAddress());
+                            intent.setClass(getActivity(), AppointmentActivity.class);
+                            startActivity(intent);
+                        } else if(ack.getCode().equals("106")) {
+                            startActivity(new Intent(getActivity(), LoginActivity.class));
+                        }
+                    }
+                });
+    }
+
+    private void getUnfinishOrder() {
+        String phone = (String) SharedPreferenceUtils.get(getActivity(), "phone", "");
+        HashMap<String, String> baseParam = AppUtils.getBaseHashMap();
+        baseParam.put("mobile", phone);
+        baseParam.put("page", "1");
+        baseParam.put("size", "100");
+        baseParam.put("status", "0");
+        OkHttpUtils.postString()
+                .url(ApiConstant.BASE_URL + ApiConstant.ORDERS)
+                .content(new Gson().toJson(baseParam))
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        stopProgressDialog();
+                        ToastUtil.show(e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        MyOrderAck ack = JSON.parseObject(response, MyOrderAck.class);
+                        if(ack !=null && ack.getCode().equals("200")) {
+                            int status = ack.getPageList().getRows().get(0).getStatus();
+                            if(status == 0 || status == 1 || status == -2 || status == 2 || status == 3) {
+                                Intent intent = new Intent();
+                                if(firstLatLng != null) {
+                                    intent.putExtra("lat", firstLatLng.latitude);
+                                    intent.putExtra("lon", firstLatLng.longitude);
+                                }
+                                intent.setClass(getActivity(), AppointmentActivity.class);
+                                startActivity(intent);
+                            }
+                        }
+                    }
+                });
     }
 }
