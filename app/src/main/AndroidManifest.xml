@@ -64,6 +64,8 @@
         <activity android:name=".activity.RechargeActivity" />
         <activity android:name=".activity.WebviewActivity" />
         <activity android:name=".activity.AppointmentActivity" />
+        <activity android:name=".activity.CitySelectActivity" />
+        <activity android:name=".activity.MessageActivity" />
 
         <service android:name="com.baidu.location.f" android:enabled="true"
             android:process=":remote" />

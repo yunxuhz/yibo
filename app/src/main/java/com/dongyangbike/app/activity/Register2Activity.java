@@ -109,7 +109,10 @@ public class Register2Activity extends BaseActivity {
         mAuth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ToastUtil.show("用户注册协议");
+                Intent intent = new Intent();
+                intent.setClass(Register2Activity.this, WebviewActivity.class);
+                intent.putExtra("url", "https://carxcx.jimilicai.com/h5/registration.html");
+                startActivity(intent);
             }
         });
 

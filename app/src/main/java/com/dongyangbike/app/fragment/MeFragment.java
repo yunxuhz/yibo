@@ -18,6 +18,7 @@ import com.dongyangbike.app.activity.LoginActivity;
 import com.dongyangbike.app.activity.ParkingRecordActivity;
 import com.dongyangbike.app.activity.RechargeActivity;
 import com.dongyangbike.app.activity.SettingActivity;
+import com.dongyangbike.app.activity.WebviewActivity;
 import com.dongyangbike.app.base.ApiConstant;
 import com.dongyangbike.app.dialog.DialogClickListener;
 import com.dongyangbike.app.dialog.DialogManager;
@@ -66,6 +67,16 @@ public class MeFragment extends BaseFragment {
         super.onDestroy();
 
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        String phone = (String)SharedPreferenceUtils.get(getContext(), "phone", "");
+        if(!StringUtil.isStringEmpty(phone)) {
+            getUserInfo(phone);
+        }
     }
 
     @Nullable
@@ -168,6 +179,16 @@ public class MeFragment extends BaseFragment {
 
                     }
                 });
+            }
+        });
+
+        mHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setClass(getActivity(), WebviewActivity.class);
+                intent.putExtra("url", "https://carxcx.jimilicai.com/h5/helpCenter.html");
+                startActivity(intent);
             }
         });
     }

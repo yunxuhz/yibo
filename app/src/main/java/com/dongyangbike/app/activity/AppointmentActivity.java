@@ -125,7 +125,7 @@ public class AppointmentActivity extends BaseActivity {
 
     private void updateView(MyOrderAck data) {
         final MyOrderAck.PageListBean.RowsBean bean = data.getPageList().getRows().get(0);
-        yardName.setText(bean.getMerchant_name() + bean.getYard_name());
+        yardName.setText(bean.getAddress());
 
         mOrderId = bean.getId();
         mStatus = bean.getStatus();
@@ -156,7 +156,7 @@ public class AppointmentActivity extends BaseActivity {
         command.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(command.getText().toString().equals("进场")) {
+                if(command.getText().toString().equals("开锁")) {
                     openLock(mOrderId);
                 } else if(command.getText().toString().equals("支付")) {
                     doPay(mOrderId);
@@ -292,6 +292,7 @@ public class AppointmentActivity extends BaseActivity {
                         if(ack != null && ack.getCode().equals("200")) {
                             command.setText("开锁");
                             cancel.setVisibility(View.INVISIBLE);
+                            finish();
                         }
                         ToastUtil.show(ack.getMessage());
                     }

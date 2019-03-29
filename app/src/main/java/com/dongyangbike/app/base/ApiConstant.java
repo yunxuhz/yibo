@@ -24,5 +24,10 @@ public class ApiConstant {
     public static String OPEN_LOCK = "/api/parkingLot/openLock";
     public static String PAY = "/api/pay/deduct";
     public static String CANCEL = "/api/order/cancel";
+    public static String RESET_PWD = "/api/register/updatePassword";
+    public static String GET_CITY_LIST = "/api/city/getAvailableCity";
+    public static String GET_MESSAGE = "/api/userInfo/getByMobileMessageList";
+
+
 
 }

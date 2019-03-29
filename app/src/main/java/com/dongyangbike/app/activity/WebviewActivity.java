@@ -44,6 +44,14 @@ public class WebviewActivity extends BaseActivity {
         setContentView(R.layout.activity_webview);
 
         mTitle = findViewById(R.id.title);
+        mBack = findViewById(R.id.back);
+
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         mUrl = getIntent().getStringExtra("url");
         if(StringUtil.isStringEmpty(mUrl)) {

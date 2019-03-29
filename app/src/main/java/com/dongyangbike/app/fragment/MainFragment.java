@@ -44,9 +44,11 @@ import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.model.LatLng;
 import com.dongyangbike.app.R;
 import com.dongyangbike.app.activity.AppointmentActivity;
+import com.dongyangbike.app.activity.CitySelectActivity;
 import com.dongyangbike.app.activity.ForgetPwdActivity;
 import com.dongyangbike.app.activity.LoginActivity;
 import com.dongyangbike.app.activity.MainActivity;
+import com.dongyangbike.app.activity.MessageActivity;
 import com.dongyangbike.app.activity.NearStationsActivity;
 import com.dongyangbike.app.activity.RechargeActivity;
 import com.dongyangbike.app.activity.SearchResultActivity;
@@ -57,6 +59,7 @@ import com.dongyangbike.app.base.ApiConstant;
 import com.dongyangbike.app.base.BaseApplication;
 import com.dongyangbike.app.dialog.DialogClickListener;
 import com.dongyangbike.app.dialog.DialogManager;
+import com.dongyangbike.app.event.LatLonEvent;
 import com.dongyangbike.app.event.LoginEvent;
 import com.dongyangbike.app.event.SwitchParkEvent;
 import com.dongyangbike.app.http.ack.BaseAck;
@@ -105,6 +108,7 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
 
     MapStatusUpdate mMapStatusUpdate;
 
+    private String mCurCityName;
     private TextView mCity;
     private EditText mInput;
     private RelativeLayout mNearStation;
@@ -125,6 +129,8 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
     private TextView daohang;
     private TextView yuyue;
     private TextView distance;
+
+    private ImageView message;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -167,12 +173,28 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
         mLocClient.start();
 
         mCity = view.findViewById(R.id.city);
+        message = view.findViewById(R.id.message);
         mInput = view.findViewById(R.id.input);
 
         mCity.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.putExtra("city", mCurCityName);
+                intent.setClass(getActivity(), CitySelectActivity.class);
+                startActivity(intent);
+            }
+        });
 
+        message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String phone = (String) SharedPreferenceUtils.get(getActivity(), "phone", "");
+                if(StringUtil.isStringEmpty(phone)) {
+                    startActivity(new Intent(getActivity(), LoginActivity.class));
+                } else {
+                    startActivity(new Intent(getActivity(), MessageActivity.class));
+                }
             }
         });
 
@@ -226,6 +248,17 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
             }
         });
 
+        if(BaseApplication.getInstance().getCurrentLatLng() != null) {
+            double lat = BaseApplication.getInstance().getCurrentLatLng().latitude;
+            double lon = BaseApplication.getInstance().getCurrentLatLng().longitude;
+            getCurCity(lat, lon);
+            markNearStations();
+            LatLng ll = new LatLng(lat, lon);
+            MapStatus.Builder builder = new MapStatus.Builder();
+            builder.target(ll).zoom(18.0f);
+            mBaiDuMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+        }
+
         return view;
     }
 
@@ -276,7 +309,7 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
     }
 
     private void showAndHideInfoWindow(final NearStationsAck.Data.Row data) {
-        yardName.setText(data.getYardName());
+        yardName.setText(data.getMerchantName());
         distance.setText("距离" + data.getDistance());
         count.setText(data.getSurplusCount() + "个车位可预约");
         yuyue.setOnClickListener(new View.OnClickListener() {
@@ -345,6 +378,7 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
                     public void onResponse(String response, int id) {
                         final CurCityAck data = JSON.parseObject(response, CurCityAck.class);
                         if (data != null && data.getCode().equals("200")) {
+                            mCurCityName = data.getCityName();
                             mCity.setText(data.getCityName());
                         }
                     }
@@ -410,6 +444,16 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
 
         LatLng ll = new LatLng(event.getData().getLatitude(),
                 event.getData().getLongitude());
+        MapStatus.Builder builder = new MapStatus.Builder();
+        builder.target(ll).zoom(18.0f);
+        mBaiDuMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLatLonEvent(LatLonEvent event) {
+        mCity.setText(event.getName());
+        LatLng ll = new LatLng(event.getLat(),
+                event.getLon());
         MapStatus.Builder builder = new MapStatus.Builder();
         builder.target(ll).zoom(18.0f);
         mBaiDuMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
@@ -640,6 +684,7 @@ public class MainFragment extends BaseFragment implements BaiduMap.OnMapClickLis
                                     intent.putExtra("lat", firstLatLng.latitude);
                                     intent.putExtra("lon", firstLatLng.longitude);
                                 }
+                                intent.putExtra("address", ack.getPageList().getRows().get(0).getAddress());
                                 intent.setClass(getActivity(), AppointmentActivity.class);
                                 startActivity(intent);
                             }

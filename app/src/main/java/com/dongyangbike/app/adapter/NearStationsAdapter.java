@@ -48,7 +48,7 @@ public class NearStationsAdapter extends RecyclerView.Adapter<NearStationsAdapte
     @Override
     public void onBindViewHolder(ViewHolder holder, final int position) {
         final NearStationsAck.Data.Row data = list.get(position);
-        holder.yardName.setText(data.getYardName());
+        holder.yardName.setText(data.getMerchantName());
         holder.distance.setText("距离" + data.getDistance());
         holder.count.setText(data.getSurplusCount() + "个车位可预约");
         holder.yuyue.setOnClickListener(new View.OnClickListener() {

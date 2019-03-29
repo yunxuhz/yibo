@@ -20,4 +20,10 @@
     <color name="text_color_hint">#999999</color>
     <color name="text_color_hint2">#666666</color>
     <color name="text_color_unclick">#cccccc</color>
+
+    <color name="font_feae1b">#feae1b</color>
+    <color name="bg_653fac">#653fac</color>
+    <color name="bg_efeff4">#efeff4</color>
+    <color name="font_7c738c">#7c738c</color>
+    <color name="font_130b27">#130b27</color>
 </resources>

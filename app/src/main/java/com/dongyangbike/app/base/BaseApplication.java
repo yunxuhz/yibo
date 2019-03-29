@@ -60,7 +60,7 @@ public class BaseApplication extends Application {
         mLocationClient.setLocOption(option);
     }
 
-    LatLng currentLatLng;
+    LatLng currentLatLng = null;
 
     public LatLng getCurrentLatLng() {
         return currentLatLng;

@@ -128,7 +128,7 @@ public class RechargeActivity extends BaseActivity {
         String phone = (String) SharedPreferenceUtils.get(this, "phone", "");
 
         HashMap<String, String> baseParam = AppUtils.getBaseHashMap();
-        baseParam.put("payAmount", 0.01 + "");
+        baseParam.put("payAmount", amount + "");
         baseParam.put("mobile", phone);
         baseParam.put("payChannel", payChannel);
         baseParam.put("tradeType", tradeType);

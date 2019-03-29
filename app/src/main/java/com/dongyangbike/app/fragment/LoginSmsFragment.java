@@ -134,7 +134,6 @@ public class LoginSmsFragment extends BaseFragment {
                                         } else {
                                             ToastUtil.show(data.getMessage());
                                         }
-                                        ToastUtil.show(response);
                                     }
                                 });
                     } else {

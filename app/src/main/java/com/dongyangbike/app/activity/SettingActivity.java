@@ -37,7 +37,10 @@ public class SettingActivity extends BaseActivity {
         findViewById(R.id.about).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ToastUtil.show("关于我们");
+                Intent intent = new Intent();
+                intent.setClass(SettingActivity.this, WebviewActivity.class);
+                intent.putExtra("url", "https://carxcx.jimilicai.com/h5/aboutUs.html");
+                startActivity(intent);
             }
         });
 
