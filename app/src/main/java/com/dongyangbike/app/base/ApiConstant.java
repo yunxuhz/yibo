@@ -5,7 +5,8 @@ public class ApiConstant {
     // WX_PAY  API_KEY
     public static final  String API_KEY="79ad3ff7af3b75d1848f755c9003bc2c";
 
-    public static String BASE_URL = "http://140.143.131.31:9090";
+//    public static String BASE_URL = "http://140.143.131.31:9090";
+    public static String BASE_URL = "http://api.yipocar.com";
     public static String SMS_SEND = "/api/sms/send";
     public static String REGISTER = "/api/register/registerSubmit";
     public static String SMS_LOGIN = "/api/login/smsLogin";

@@ -118,6 +118,7 @@ public class Register2Activity extends BaseActivity {
 
         mCountDown = findViewById(R.id.countDown);
 
+        SmsCountDownTimer.FLAG_FIRST_IN = true;
         if(!SmsCountDownTimer.FLAG_FIRST_IN && SmsCountDownTimer.curMills + 60000 > System.currentTimeMillis()) {
             setCountDownTimer(SmsCountDownTimer.curMills + 60000 - System.currentTimeMillis());
             mTimer.timeStart(false);
